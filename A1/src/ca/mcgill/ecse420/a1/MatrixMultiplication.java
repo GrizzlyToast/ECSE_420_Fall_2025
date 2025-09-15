@@ -6,14 +6,14 @@ import java.util.concurrent.Executors;
 public class MatrixMultiplication {
 	
 	private static final int NUMBER_THREADS = 1;
-	private static final int MATRIX_SIZE = 2000
+	private static final int MATRIX_SIZE = 2000;
 
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
 		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		printMatrix(sequentialMultiplyMatrix(a, b));
+		sequentialMultiplyMatrix(a, b);
 		parallelMultiplyMatrix(a, b);	
 	}
 	
