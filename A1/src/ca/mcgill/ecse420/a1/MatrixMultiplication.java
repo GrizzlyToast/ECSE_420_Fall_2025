@@ -6,14 +6,14 @@ import java.util.concurrent.Executors;
 public class MatrixMultiplication {
 	
 	private static final int NUMBER_THREADS = 1;
-	private static final int MATRIX_SIZE = 2000;
+	private static final int MATRIX_SIZE = 2000
 
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
 		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		sequentialMultiplyMatrix(a, b);
+		printMatrix(sequentialMultiplyMatrix(a, b));
 		parallelMultiplyMatrix(a, b);	
 	}
 	
@@ -25,7 +25,15 @@ public class MatrixMultiplication {
 	 * @return the result of the multiplication
 	 * */
 	public static double[][] sequentialMultiplyMatrix(double[][] a, double[][] b) {
-		
+		double c[][] = new double[MATRIX_SIZE][MATRIX_SIZE];
+
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            for (int j = 0; j < MATRIX_SIZE; j++) {
+                for (int k = 0; k < MATRIX_SIZE; k++)
+                    c[i][j] += a[i][k] * b[k][j];
+            }
+        }
+		return c;
 	}
 	
 	/**
@@ -69,6 +77,7 @@ public class MatrixMultiplication {
         return matrix;
     }
 
+
 	public static class DotProduct implements Runnable {
 		private double[][] a;
 		private double[][] b;
@@ -95,5 +104,15 @@ public class MatrixMultiplication {
     }
 
 	}
+
+	static void printMatrix(double M[][])
+    {
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            for (int j = 0; j < MATRIX_SIZE; j++)
+                System.out.print(M[i][j] + " ");
+
+            System.out.println();
+        }
+    }
 	
 }
