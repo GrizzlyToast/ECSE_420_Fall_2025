@@ -6,23 +6,15 @@ import java.util.concurrent.Executors;
 public class MatrixMultiplication {
 	
 	private static final int NUMBER_THREADS = 1;
-	private static final int MATRIX_SIZE = 2; // Original is 2000
+	private static final int MATRIX_SIZE = 2000
 
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		System.out.println("Matrix a: ");
-		printMatrix(a, MATRIX_SIZE, MATRIX_SIZE);
-
-
 		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		System.out.println("Matrix b: ");
-		printMatrix(b, MATRIX_SIZE, MATRIX_SIZE);
-
-		System.out.println("Matrix a*b: ");
-		printMatrix(sequentialMultiplyMatrix(a, b), MATRIX_SIZE, MATRIX_SIZE);
-		// parallelMultiplyMatrix(a, b);	
+		printMatrix(sequentialMultiplyMatrix(a, b));
+		parallelMultiplyMatrix(a, b);	
 	}
 	
 	/**
@@ -71,11 +63,10 @@ public class MatrixMultiplication {
         return matrix;
     }
 
-	static void printMatrix(double M[][], int rowSize,
-                            int colSize)
+	static void printMatrix(double M[][])
     {
-        for (int i = 0; i < rowSize; i++) {
-            for (int j = 0; j < colSize; j++)
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            for (int j = 0; j < MATRIX_SIZE; j++)
                 System.out.print(M[i][j] + " ");
 
             System.out.println();
