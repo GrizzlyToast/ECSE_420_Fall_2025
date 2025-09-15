@@ -44,6 +44,20 @@ public class MatrixMultiplication {
 	 * @return the result of the multiplication
 	 * */
         public static double[][] parallelMultiplyMatrix(double[][] a, double[][] b) {
+			double[][] c = new double[MATRIX_SIZE][MATRIX_SIZE];
+
+			ExecutorService executor = Executors.newFixedThreadPool(NUMBER_THREADS);
+
+			for (int i = 0; i < MATRIX_SIZE; i++) {
+            for (int j = 0; j < MATRIX_SIZE; j++) {
+                // Each element calculation is a task
+                Runnable task = new DotProduct(a, b, c, i, j);
+                executor.execute(task);
+            }
+        }
+
+		executor.shutdown();
+		return c;
 		
 	}
         
@@ -63,6 +77,34 @@ public class MatrixMultiplication {
         return matrix;
     }
 
+
+	public static class DotProduct implements Runnable {
+		private double[][] a;
+		private double[][] b;
+		private double[][] c;
+		private int row;
+		private int col;
+
+		public DotProduct(double[][] a, double[][] b, double[][] c, int row, int col) {
+			this.a = a;
+			this.b = b;
+			this.c = c;
+			this.row = row;
+			this.col = col;
+		}
+
+		@Override
+		public void run() {
+			// Calculate the dot product for one element
+			double sum = 0;
+			for (int k = 0; k < MATRIX_SIZE; k++) {
+				sum += a[row][k] * b[k][col];
+			}
+			c[row][col] = sum;
+    }
+
+	}
+
 	static void printMatrix(double M[][])
     {
         for (int i = 0; i < MATRIX_SIZE; i++) {
@@ -72,6 +114,5 @@ public class MatrixMultiplication {
             System.out.println();
         }
     }
-
 	
 }
