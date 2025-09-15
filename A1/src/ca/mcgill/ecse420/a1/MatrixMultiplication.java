@@ -6,15 +6,17 @@ import java.util.concurrent.Executors;
 public class MatrixMultiplication {
 	
 	private static final int NUMBER_THREADS = 1;
-	private static final int MATRIX_SIZE = 2000;
+	private static final int MATRIX_SIZE = 2;
 
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
 		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		sequentialMultiplyMatrix(a, b);
-		parallelMultiplyMatrix(a, b);	
+		System.out.println("Sequential");
+		printMatrix(sequentialMultiplyMatrix(a, b));
+		System.out.println("Parallel");
+		printMatrix(parallelMultiplyMatrix(a, b));	
 	}
 	
 	/**
@@ -57,8 +59,13 @@ public class MatrixMultiplication {
         }
 
 		executor.shutdown();
+		    try {
+				// Wait for all tasks to finish (timeout after 1 minute)
+				executor.awaitTermination(1, java.util.concurrent.TimeUnit.MINUTES);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		return c;
-		
 	}
         
         /**
