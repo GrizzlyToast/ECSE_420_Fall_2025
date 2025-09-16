@@ -5,18 +5,18 @@ import java.util.concurrent.Executors;
 
 public class MatrixMultiplication {
 	
-	private static final int NUMBER_THREADS = 1;
-	private static final int MATRIX_SIZE = 2;
+	private static final int NUMBER_THREADS = 10;
+	private static final int MATRIX_SIZE = 1000;
 
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
 		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		System.out.println("Sequential");
-		printMatrix(sequentialMultiplyMatrix(a, b));
-		System.out.println("Parallel");
+		System.out.println("-------------------------Parallel-------------------------------");
 		printMatrix(parallelMultiplyMatrix(a, b));	
+		System.out.println("-------------------------Sequential-------------------------------");
+		printMatrix(sequentialMultiplyMatrix(a, b));
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class MatrixMultiplication {
 			for (int i = 0; i < MATRIX_SIZE; i++) {
             for (int j = 0; j < MATRIX_SIZE; j++) {
                 // Each element calculation is a task
-                Runnable task = new DotProduct(a, b, c, i, j);
+                DotProduct task = new DotProduct(a, b, c, i, j);
                 executor.execute(task);
             }
         }
