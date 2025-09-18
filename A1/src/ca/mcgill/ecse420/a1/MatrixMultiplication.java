@@ -12,11 +12,18 @@ public class MatrixMultiplication {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		System.out.println("-------------------------Parallel-------------------------------");
-		printMatrix(parallelMultiplyMatrix(a, b));	
-		System.out.println("-------------------------Sequential-------------------------------");
-		printMatrix(sequentialMultiplyMatrix(a, b));
+		// double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		// System.out.println("-------------------------Parallel-----------------------------");
+		// printMatrix(parallelMultiplyMatrix(a, b));	
+		// System.out.println("-------------------------Sequential----------------------------");
+		// printMatrix(sequentialMultiplyMatrix(a, b));
+
+
+		double[][] c = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		double[][] d = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		String[] times = measureMatrixMultiplicationPerformance(c, d);
+		System.out.println("Sequential time: " + times[0] + " ms");
+		System.out.println("Parallel time: " + times[1] + " ms");
 	}
 	
 	/**
@@ -121,5 +128,19 @@ public class MatrixMultiplication {
             System.out.println();
         }
     }
-	
+
+	static String[] measureMatrixMultiplicationPerformance(double[][] a, double[][] b) {
+		long startSeq = System.currentTimeMillis();
+		sequentialMultiplyMatrix(a, b);
+		long endSeq = System.currentTimeMillis();
+
+		long startPar = System.currentTimeMillis();
+		parallelMultiplyMatrix(a, b);
+		long endPar = System.currentTimeMillis();
+
+		String seqTime = String.valueOf(endSeq - startSeq);
+		String parTime = String.valueOf(endPar - startPar);
+
+		return new String[] { seqTime, parTime };
+	}
 }
