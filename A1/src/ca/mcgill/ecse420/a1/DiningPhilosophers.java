@@ -1,28 +1,58 @@
 package ca.mcgill.ecse420.a1;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 
 public class DiningPhilosophers {
-	
-	public static void main(String[] args) {
+	private static final int N = 5;  // Number of philosophers
+	private static final Semaphore[] chopsticks = new Semaphore[N];
 
-		int numberOfPhilosophers = 5;
-                Philosopher[] philosophers = new Philosopher[numberOfPhilosophers];
-                Object[] chopsticks = new Object[numberOfPhilosophers];
+	public static void main(String[] args) {
+		for (int i = 0; i < N; i++) {
+			chopsticks[i] = new Semaphore(1);
+		}
+		for (int i = 0; i < N; i++) {
+			new Thread(new Philosopher(i)).start();
+		}
 	}
 
 	public static class Philosopher implements Runnable {
+		private final int id;
 
-		
+		Philosopher(int id) {
+			this.id = id;
+		}
 
 		@Override
 		public void run() {
-			
+			/* Q3.1 How deadlock occurs
+			* Deadlock will occur when every philospher picks up their left chopstick and are then stuck waiting for the right chopstick.
+			*/
+			while (true) {
+				System.out.println("Philosopher " + id + " is thinking...");
+
+				try {
+					// Pick up left chopstick
+					chopsticks[id].acquire();
+
+					// Pick up right chopstick
+					chopsticks[(id + 1) % N].acquire();
+
+					System.out.println("Philosopher " + id + " is eating...");
+
+					// Simulate eating
+					Thread.sleep(100);
+
+					// Put down left chopstick
+					chopsticks[id].release();
+
+					// Put down right chopstick
+					chopsticks[(id + 1) % N].release();
+
+					System.out.println("Philosopher " + id + " finished eating and put down chopsticks.");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-
-
 	}
-
 }
