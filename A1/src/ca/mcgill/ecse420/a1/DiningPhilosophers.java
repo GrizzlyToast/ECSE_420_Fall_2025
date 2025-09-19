@@ -6,7 +6,9 @@ public class DiningPhilosophers {
 	private static final int N = 5;  // Number of philosophers
 	private static final Semaphore[] chopsticks = new Semaphore[N];
 	/* Q3.2 Fair semaphore to ensure FIFO order:
-	 * The semaphore queue ensures that only N-1 philosophers are permitted to pick up chopsticks. If the queue is full, once a philosopher has eaten, they are dequeued and the awaiting philospher is allowed to join the queue. Semphores enforce a fairness policy based on longest wait time, therefore the ordering of the queue is based on FIFO. The queue ensures that all philosphers get a chance to eat based on the order they joined the queue. This solution avoids starvation while promoting fairness.
+	 * The semaphore queue ensures that only N-1 philosophers are permitted to pick up chopsticks. If the queue is full, once a philosopher has eaten, they are dequeued and the awaiting philospher is allowed to join the queue. This solves the issue of deadlocks occuring
+	 * 
+	 * Furthermore, semphores enforce a fairness policy based on longest wait time, therefore the ordering of the queue is based on FIFO. Meaning, the queue ensures that all philosphers get a chance to eat based on the order they joined the queue. This solution avoids starvation while promoting fairness.
 	 */
 	private static final Semaphore queue = new Semaphore(N - 1, true);
 
