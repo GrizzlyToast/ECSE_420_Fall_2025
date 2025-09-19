@@ -5,6 +5,10 @@ import java.util.concurrent.Semaphore;
 public class DiningPhilosophers {
 	private static final int N = 5;  // Number of philosophers
 	private static final Semaphore[] chopsticks = new Semaphore[N];
+	/* Q3.2 Fair semaphore to ensure FIFO order:
+	 * The FIFO Semaphore queue ensures that only N-1 philosophers are permitted to pick up chopsticks. If the queue is full, once a philosopher has eaten, they are dequeued and the awaiting philospher is allowed to join the queue. Since the FIFO queue enforces priority based on order, it ensures that all philosphers get a chance to eat. This solution avoids starvation while promoting fairness.
+	 */
+	private static final Semaphore queue = new Semaphore(N - 1, true);
 
 	public static void main(String[] args) {
 		for (int i = 0; i < N; i++) {
@@ -31,6 +35,9 @@ public class DiningPhilosophers {
 				System.out.println("Philosopher " + id + " is thinking...");
 
 				try {
+					// Request to enter the queue (FIFO)
+					queue.acquire();
+
 					// Pick up left chopstick
 					chopsticks[id].acquire();
 
@@ -47,6 +54,9 @@ public class DiningPhilosophers {
 
 					// Put down right chopstick
 					chopsticks[(id + 1) % N].release();
+
+					// Leave the queue
+					queue.release();
 
 					System.out.println("Philosopher " + id + " finished eating and put down chopsticks.");
 				} catch (InterruptedException e) {
