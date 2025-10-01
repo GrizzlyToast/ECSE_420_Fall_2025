@@ -13,18 +13,18 @@ public class MatrixMultiplication {
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
-		// double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		// double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
-		// System.out.println("-------------------------Parallel-----------------------------");
-		// printMatrix(parallelMultiplyMatrix(a, b));	
-		// System.out.println("-------------------------Sequential----------------------------");
-		// printMatrix(sequentialMultiplyMatrix(a, b, NUMBER_THREADS));
+		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		System.out.println("-------------------------Parallel-----------------------------");
+		printMatrix(parallelMultiplyMatrix(a, b, MATRIX_SIZE, NUMBER_THREADS));	
+		System.out.println("-------------------------Sequential----------------------------");
+		printMatrix(sequentialMultiplyMatrix(a, b, MATRIX_SIZE));
 
-		// System.out.println("Sequential time: " + measurePerformance(MATRIX_SIZE)[0]);
-		// System.out.println("Parallel time: " + measurePerformance(MATRIX_SIZE)[1]);
+		System.out.println("Sequential time: " + measurePerformance(MATRIX_SIZE)[0]);
+		System.out.println("Parallel time: " + measurePerformance(MATRIX_SIZE)[1]);
 
 		createMatrixMultiplicationCSV(new int[] {100, 200, 500, 1000, 2000});
-		//createThreadPerformanceCSV(Runtime.getRuntime().availableProcessors());
+		createThreadPerformanceCSV(Runtime.getRuntime().availableProcessors());
 	}
 	
 	/**
