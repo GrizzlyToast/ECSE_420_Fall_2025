@@ -1,6 +1,0 @@
-Matrix Size,Sequential Time(ms),Parallel Time(ms)
-100,6,27
-200,12,36
-500,267,186
-1000,3175,1866
-2000,48507,9286

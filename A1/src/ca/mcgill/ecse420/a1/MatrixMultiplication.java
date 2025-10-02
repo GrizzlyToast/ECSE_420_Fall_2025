@@ -7,14 +7,18 @@ import java.io.IOException;
 
 public class MatrixMultiplication {
 	
-	private static final int NUMBER_THREADS = 13;
-	private static final int MATRIX_SIZE = 2000;
+	private static final int NUMBER_THREADS = 15;
+	private static final int MATRIX_SIZE = 3000;
 
         public static void main(String[] args) {
 		
 		// Generate two random matrices, same size
 		double[][] a = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
 		double[][] b = generateRandomMatrix(MATRIX_SIZE, MATRIX_SIZE);
+		System.out.println("-------------------------Matrix a----------------------------");
+		printMatrix(a);
+		System.out.println("-------------------------Matrix b----------------------------");
+		printMatrix(b);
 		System.out.println("-------------------------Parallel-----------------------------");
 		printMatrix(parallelMultiplyMatrix(a, b, MATRIX_SIZE, NUMBER_THREADS));	
 		System.out.println("-------------------------Sequential----------------------------");
@@ -23,7 +27,7 @@ public class MatrixMultiplication {
 		System.out.println("Sequential time: " + measurePerformance(MATRIX_SIZE)[0]);
 		System.out.println("Parallel time: " + measurePerformance(MATRIX_SIZE)[1]);
 
-		createMatrixMultiplicationCSV(new int[] {100, 200, 500, 1000, 2000});
+		createMatrixMultiplicationCSV(new int[] {100, 200, 500, 1000, 2000, 3000});
 		createThreadPerformanceCSV(Runtime.getRuntime().availableProcessors());
 	}
 	
@@ -152,7 +156,7 @@ public class MatrixMultiplication {
 
 	static void createMatrixMultiplicationCSV(int[] sizes) {
 		String csvFile = "matrix_multiplication_performance.csv";
-		try (FileWriter writer = new FileWriter(csvFile, false)) { // 'false' to overwrite file each run
+		try (FileWriter writer = new FileWriter(csvFile, false)) {
 			writer.append("Matrix Size,Sequential Time(ms),Parallel Time(ms)\n");
 			writer.flush();
 			for (int size : sizes) {
