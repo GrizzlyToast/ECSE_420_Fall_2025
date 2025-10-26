@@ -5,11 +5,11 @@ public class FilterLock implements Lock{
     private int[] victim;
     private int n;
     
-    public FilterLock(int n) {
-        this.n = n;
+    public FilterLock(int nThreads) {
+        n = nThreads;
         level = new int[n];
         victim = new int[n];
-        for (int i = 1; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             level[i] = 0;
         }
     }
@@ -19,12 +19,16 @@ public class FilterLock implements Lock{
         for (int L = 1; L < n; L++) { // one level at a time
             level[currentThread] = L; // intention to enter level L
             victim[L] = currentThread; // give priority to others
-
+            boolean conflicted = true;
+            while (conflicted) {
+            conflicted = false;
             for (int k = 0; k < n; k++) {
-                while ((k != currentThread) && (level[k] >= L && victim[L] == currentThread)) {
-                    // condition: Wait as long as someone is at same or higher level, and I'm disgnated as a victim
+                if (k != currentThread && level[k] >= L && victim[L] == currentThread) {
+                    conflicted = true;
+                    break;
                 }
             }
+        }
     }
 }
 
