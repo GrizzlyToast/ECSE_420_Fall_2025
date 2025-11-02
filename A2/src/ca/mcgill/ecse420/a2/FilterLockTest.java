@@ -65,10 +65,7 @@ public class FilterLockTest {
 
         // Verify the results
         System.out.flush();
-        for(int i = 0; i < iters; i++) {
-            System.out.println("ID: " + threadIdArray[i] + " counter = " + (i + 1));
-        }
-        System.out.println("Final counter value: " + counter.get());
+        System.out.println("Final value of shared counter (should be: " + iters + ") = " + counter.get());
     }
     
     public static void main(String[] args) {
