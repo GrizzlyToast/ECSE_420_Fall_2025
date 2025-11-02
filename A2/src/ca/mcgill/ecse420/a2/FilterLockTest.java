@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class FilterLockTest {
     private final int nThreads;
-    private static final int COUNT = 100;
+    private final int iters;
     private final int PER_THREAD;
 
     private final AtomicInteger counter;
@@ -15,16 +15,17 @@ public class FilterLockTest {
 
     private FilterLock lock;
 
-    public FilterLockTest(int nThreads) {
+    public FilterLockTest(int nThreads, int iters) {
         this.nThreads = nThreads;
-        this.PER_THREAD = COUNT / nThreads;
+        this.iters = iters; // dynamically assign to ensure results are not truncated
+        this.PER_THREAD = iters / nThreads;
         
         this.lock = new FilterLock(nThreads);
         ThreadID.reset(); 
 
         this.counter = new AtomicInteger(0);
-        this.counterArray = new int[COUNT];
-        this.threadIdArray = new int[COUNT];
+        this.counterArray = new int[iters];
+        this.threadIdArray = new int[iters];
     }
     
     private class FilterThread implements Runnable {
@@ -36,6 +37,15 @@ public class FilterLockTest {
                     int counterValue = counter.getAndIncrement();
                     counterArray[counterValue] += 1;
                     threadIdArray[counterValue] = ThreadID.get();
+
+                    // Allow threads to interleave
+                    try {
+                        Thread.sleep((long) Math.random()); 
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt(); 
+                        return;
+                    }
+
                 } finally {
                     lock.unlock();
                 }
@@ -55,7 +65,7 @@ public class FilterLockTest {
 
         // Verify the results
         System.out.flush();
-        for(int i = 0; i < COUNT; i++) {
+        for(int i = 0; i < iters; i++) {
             System.out.println("ID: " + threadIdArray[i] + " counter = " + (i + 1));
         }
         System.out.println("Final counter value: " + counter.get());
@@ -65,7 +75,7 @@ public class FilterLockTest {
         int[] nThreadsOptions = {2, 3, 4, 5, 6, 7, 8};
         for (int n : nThreadsOptions) {
             System.out.println("\n--- Running FilterLock Test with N=" + n + " threads ---");
-            FilterLockTest test = new FilterLockTest(n);
+            FilterLockTest test = new FilterLockTest(n, (n*10));
             test.runTest();
         }
     }
