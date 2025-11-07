@@ -25,16 +25,16 @@ public class FilterLock implements Lock{
             victim[L] = currentThread; // give priority to others
             boolean conflicted = true;
             while (conflicted) {
-            conflicted = false;
-            for (int k = 0; k < n; k++) {
-                if (k != currentThread && level[k] >= L && victim[L] == currentThread) {
-                    conflicted = true;
-                    break;
+                conflicted = false;
+                for (int k = 0; k < n; k++) {
+                    if (k != currentThread && level[k] >= L && victim[L] == currentThread) {
+                        conflicted = true;
+                        break;
+                    }
                 }
             }
         }
     }
-}
 
     public void unlock() {
         int current = ThreadID.get();

@@ -1,5 +1,6 @@
 package A2.src.ca.mcgill.ecse420.a2;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,6 +13,9 @@ public class FilterLockTest {
     private final AtomicInteger counter;
     private int[] counterArray;
     private int[] threadIdArray;
+
+    private ArrayList<Integer> waiting = new ArrayList<>();
+    private int overtakeCount = 0;
 
     private FilterLock lock;
 
@@ -32,20 +36,23 @@ public class FilterLockTest {
         @Override
         public void run() {
             for (int i = 0; i < PER_THREAD; i++) {
+                
+                System.out.println("WAITING: Thread " + ThreadID.get());
+                waiting.add(ThreadID.get());
+                
                 lock.lock();
                 try {
+                    if (waiting.get(0) != ThreadID.get()) {
+                        overtakeCount++;
+                        System.out.println("OVERTAKE DETECTED by Thread " + ThreadID.get());
+                    }   
+                    System.out.println("RUNNING: Thread " + ThreadID.get());
+
                     int counterValue = counter.getAndIncrement();
                     counterArray[counterValue] += 1;
                     threadIdArray[counterValue] = ThreadID.get();
-
-                    // Allow threads to interleave
-                    try {
-                        Thread.sleep((long) Math.random()); 
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt(); 
-                        return;
-                    }
-
+                    
+                    waiting.remove(Integer.valueOf(ThreadID.get()));
                 } finally {
                     lock.unlock();
                 }
@@ -66,6 +73,7 @@ public class FilterLockTest {
         // Verify the results
         System.out.flush();
         System.out.println("Final value of shared counter (should be: " + iters + ") = " + counter.get());
+        System.out.println("Number of overtakes detected: " + overtakeCount);
     }
     
     public static void main(String[] args) {
