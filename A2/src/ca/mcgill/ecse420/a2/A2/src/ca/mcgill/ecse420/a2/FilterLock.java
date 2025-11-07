@@ -4,13 +4,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-/*
- * Q1.3
- * In theory, does the Filter lock allow threads to “overtake” other threads an arbitrary number of
-    times? Explain:
-    No it does not, because at each level, a thread indicates its intention to enter that level and gives priority to other threads by setting itself as the victim. This mechanism ensures that if multiple threads are trying to enter the same level, the one that is not the victim will proceed, while the victim will wait. As a result, a thread cannot indefinitely overtake others since it must wait for its turn at each level of the filter lock.
- */
-
 public class FilterLock implements Lock{
     private volatile int[] level;
     private volatile int[] victim;

@@ -3,12 +3,7 @@ package A2.src.ca.mcgill.ecse420.a2;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
-/*
- * Q1.7
- * In theory, does the Bakery lock allow threads to “overtake” other threads an arbitrary number of
-    times? Explain:
-    No, the Bakery lock does not allow threads to overtake others an arbitrary number of times. The Bakery lock uses a ticketing system where each thread takes a "ticket" before entering the critical section. Threads with lower numbered tickets get priority to enter the critical section. If two threads have the same ticket number, the thread with the lower thread ID gets priority. This mechanism ensures that once a thread has taken a ticket, it cannot be indefinitely overtaken by other threads, as they will have to wait for their turn based on their assigned numbers.
- */
+
 public class BakeryLock implements Lock {
     volatile boolean[] flag;
     volatile int[] label;
