@@ -73,7 +73,7 @@ public class TestFilterLock {
         // Verify the results
         System.out.flush();
         System.out.println("Final value of shared counter (should be: " + iters + ") = " + counter.get());
-        // System.out.println("Number of overtakes detected: " + overtakeCount);
+        System.out.println("Number of overtakes detected: " + overtakeCount);
     }
     
     public static void main(String[] args) {
