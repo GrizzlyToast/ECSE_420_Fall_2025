@@ -1,4 +1,4 @@
-package A2.src.ca.mcgill.ecse420.a2;
+package ca.mcgill.ecse420.a2;
 
 public class ThreadID {
 

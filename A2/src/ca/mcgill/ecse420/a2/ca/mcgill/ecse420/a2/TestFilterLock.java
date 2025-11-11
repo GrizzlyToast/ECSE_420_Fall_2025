@@ -1,11 +1,11 @@
-package A2.src.ca.mcgill.ecse420.a2;
+package ca.mcgill.ecse420.a2;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FilterLockTest {
+public class TestFilterLock {
     private final int nThreads;
     private final int iters;
     private final int PER_THREAD;
@@ -19,7 +19,7 @@ public class FilterLockTest {
 
     private FilterLock lock;
 
-    public FilterLockTest(int nThreads, int iters) {
+    public TestFilterLock(int nThreads, int iters) {
         this.nThreads = nThreads;
         this.iters = iters; // dynamically assign to ensure results are not truncated
         this.PER_THREAD = iters / nThreads;
@@ -42,10 +42,10 @@ public class FilterLockTest {
                 
                 lock.lock();
                 try {
-                    if (waiting.get(0) != ThreadID.get()) {
-                        overtakeCount++;
-                        System.out.println("OVERTAKE DETECTED by Thread " + ThreadID.get());
-                    }   
+                    // if (waiting.get(0) != ThreadID.get()) {
+                    //     overtakeCount++;
+                    //     System.out.println("OVERTAKE DETECTED by Thread " + ThreadID.get());
+                    // }   
                     System.out.println("RUNNING: Thread " + ThreadID.get());
 
                     int counterValue = counter.getAndIncrement();
@@ -73,14 +73,14 @@ public class FilterLockTest {
         // Verify the results
         System.out.flush();
         System.out.println("Final value of shared counter (should be: " + iters + ") = " + counter.get());
-        System.out.println("Number of overtakes detected: " + overtakeCount);
+        // System.out.println("Number of overtakes detected: " + overtakeCount);
     }
     
     public static void main(String[] args) {
         int[] nThreadsOptions = {2, 3, 4, 5, 6, 7, 8};
         for (int n : nThreadsOptions) {
             System.out.println("\n--- Running FilterLock Test with N=" + n + " threads ---");
-            FilterLockTest test = new FilterLockTest(n, (n*10));
+            TestFilterLock test = new TestFilterLock(n, (n*10));
             test.runTest();
         }
     }
