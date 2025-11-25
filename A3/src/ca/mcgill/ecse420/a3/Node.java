@@ -1,42 +1,24 @@
 package ca.mcgill.ecse420.a3;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Node<T> implements Lock{
+public class Node<T> {
     public T item;
     public int key;
     public volatile Node<T> next;
-    public volatile boolean marked;
+    public final ReentrantLock lock = new ReentrantLock();
 
-    @Override
-    public void lock() {
+    // Sentinel constructor
+    public Node(int key) {
+        this.key = key;
+    }
 
+    // Regular node
+    public Node(T item) {
+        this.item = item;
+        this.key = item.hashCode();
     }
-    @Override
-    public void lockInterruptibly() throws InterruptedException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'lockInterruptibly'");
-    }
-    @Override
-    public Condition newCondition() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'newCondition'");
-    }
-    @Override
-    public boolean tryLock() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'tryLock'");
-    }
-    @Override
-    public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'tryLock'");
-    }
-    @Override
-    public void unlock() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'unlock'");
-    }
+
+    // Empty constructor for creating head artificially
+    public Node() {}
 }
