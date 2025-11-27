@@ -21,7 +21,6 @@ public class MatrixVectorMultiplication {
         return y;
     }
 
-    // Parallel multiply: for each row submit a task that computes row dot-product
     public static double[] multiplyParallel(double[][] A, double[] x, ExecutorService pool, int threshold)
             throws InterruptedException, ExecutionException {
         int n = x.length;
@@ -30,12 +29,10 @@ public class MatrixVectorMultiplication {
 
         for (int i = 0; i < n; i++) {
             final int row = i;
-            futures.add(pool.submit(() -> {
-                double sum = 0.0;
-                double[] Ai = A[row];
-                for (int j = 0; j < n; j++) sum += Ai[j] * x[j];
-                return sum;
-            }));
+            Callable<Double> rowTask = () -> {
+                return parallelDot(A[row], x, 0, n, pool, threshold);
+            };
+            futures.add(pool.submit(rowTask));
         }
 
         for (int i = 0; i < n; i++) {
@@ -43,6 +40,34 @@ public class MatrixVectorMultiplication {
         }
         return y;
     }
+
+    // Recursive reduction for dot product by splitting the range up to threshold
+    private static Double parallelDot(double[] row, double[] x, int lo, int hi, ExecutorService pool, int threshold) {
+    int len = hi - lo;
+
+    if (len <= threshold) {
+        double s = 0.0;
+        for (int k = lo; k < hi; k++) s += row[k] * x[k];
+        return s;
+    }
+
+    int mid = lo + (len / 2);
+
+    Callable<Double> leftTask = () ->
+            parallelDot(row, x, lo, mid, pool, threshold);
+
+    Callable<Double> rightTask = () ->
+            parallelDot(row, x, mid, hi, pool, threshold);
+
+    Future<Double> fLeft = pool.submit(leftTask);
+    Future<Double> fRight = pool.submit(rightTask);
+
+    try {
+        return fLeft.get() + fRight.get();
+    } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException("parallelDot task failed", e);
+    }
+}
 
     private static double[][] randomMatrix(int n, long seed) {
         Random rnd = new Random(seed);
@@ -73,7 +98,7 @@ public class MatrixVectorMultiplication {
     public static void main(String[] args) throws Exception {
         final int n = 4000;                
         final long seed = 12345L;
-        final int[] thresholds = {64, 128, 256, 512, 1024, 2048};
+        final int[] thresholds = {64, 128, 256, 512, 1024, 2048, 4096};
         final double tol = 1e-8;
 
         System.out.println("Available processors: " + Runtime.getRuntime().availableProcessors());
@@ -92,8 +117,8 @@ public class MatrixVectorMultiplication {
         System.out.printf("Sequential time: %.3f s\n", seqTime);
 
         // Create pool
-        int threads = Runtime.getRuntime().availableProcessors();
-        ExecutorService pool = Executors.newFixedThreadPool(threads);
+        ForkJoinPool pool = new ForkJoinPool();
+
 
         // Sweep thresholds to find best speedup
         System.out.println("\nTask thresholds: " + Arrays.toString(thresholds));

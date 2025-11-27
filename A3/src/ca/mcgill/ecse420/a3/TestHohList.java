@@ -5,7 +5,6 @@ public class TestHohList {
     public static void main(String[] args) throws InterruptedException {
         HohList<Integer> list = new HohList<>();
 
-        // Prepopulate the list with values 0..9
         System.out.println("Initializing list...");
         for (int i = 0; i < 10; i++) {
             list.add(i);
@@ -13,11 +12,6 @@ public class TestHohList {
         System.out.println("Initial list setup complete.\n");
 
         System.out.println(list);
-
-        // Worker threads:
-        // Thread A: repeatedly adds numbers 0..9
-        // Thread B: repeatedly removes numbers 0..9
-        // Main thread: calls contains()
 
         Thread adder = new Thread(() -> {
             for (int i = 0; i < 100; i++) {
