@@ -44,7 +44,7 @@ public class TestHohList {
         for (int i = 0; i < 100; i++) {
             int value = (int)(Math.random() * 10);
             boolean result = list.contains(value);
-            System.out.println("[Viewer] " + list);
+            System.out.println("View List: " + list);
             System.out.println("[Main] contains(" + value + ") → " + result);
             sleep(15);
         }
